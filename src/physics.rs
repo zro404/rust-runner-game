@@ -1,7 +1,5 @@
 use std::cmp;
 
-use sdl2::rect::Rect;
-
 use crate::types::Entity;
 
 pub struct Physics {
@@ -27,7 +25,7 @@ impl Physics {
         self.did_collide = false;
     }
 
-    pub fn run<'a>(&self, mut entity_list: Vec<Entity<'a>>) -> Vec<Entity<'a>> {
+    pub fn run<'a>(&mut self, mut entity_list: Vec<Entity<'a>>) -> Vec<Entity<'a>> {
         // Handle player jump
         let vel_y = entity_list[0].velocity_y + self.gravity;
         entity_list[0].set_velocity_y(vel_y);
@@ -40,7 +38,35 @@ impl Physics {
             entity_list[i] = e;
         }
 
-        // Check Collision
+        // Check Collision - Axis-Aligned Bounding Box
+        let player_pos = entity_list.get(0).unwrap().position;
+        for i in 1..entity_list.len() {
+            let enemy_pos = entity_list.get(i).unwrap().position;
+            if player_pos.x < enemy_pos.x + enemy_pos.w
+                && player_pos.x + player_pos.w > enemy_pos.x
+                && player_pos.y < enemy_pos.y + enemy_pos.h
+                && player_pos.y + player_pos.h > enemy_pos.y
+            {
+                self.did_collide = true;
+            }
+        }
+
+        // Destroy if entity leaves viewport
+        let mut c = entity_list.len();
+        for i in 1..entity_list.len() {
+            if c == entity_list.len() - 1 {
+                break;
+            };
+            let entity = entity_list.get(i).unwrap();
+            if entity.position.x + entity.position.w < 0 {
+                if i < entity_list.len() - 1 {
+                    entity_list[i] = entity_list.pop().unwrap();
+                } else {
+                    entity_list.pop();
+                }
+                c -= 1;
+            }
+        }
 
         entity_list
     }

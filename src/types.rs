@@ -1,5 +1,7 @@
 use sdl2::{rect::Rect, render::Texture};
 
+pub type EntityList<'a> = Vec<Entity<'a>>;
+
 #[derive(Clone, Copy)]
 pub struct Entity<'a> {
     pub texture: &'a Texture<'a>,
