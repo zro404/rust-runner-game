@@ -1,20 +1,20 @@
-use sdl2::{rect::Rect, render::Texture};
+use sdl2::rect::Rect;
+
+use crate::animation::AnimatedTexture;
 
 pub type EntityList<'a> = Vec<Entity<'a>>;
 
 #[derive(Clone, Copy)]
 pub struct Entity<'a> {
-    pub texture: &'a Texture<'a>,
-    pub sprite: Rect,
+    pub animated_texture: AnimatedTexture<'a>,
     pub position: Rect,
     pub velocity_y: i32,
 }
 
 impl Entity<'_> {
-    pub fn new<'a>(texture: &'a Texture<'a>, sprite: Rect, position: Rect) -> Entity {
+    pub fn new<'a>(texture: AnimatedTexture<'a>, position: Rect) -> Entity {
         Entity {
-            texture,
-            sprite,
+            animated_texture: texture,
             position,
             velocity_y: 0,
         }

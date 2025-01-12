@@ -1,6 +1,6 @@
 use std::cmp;
 
-use crate::types::Entity;
+use crate::entity::EntityList;
 
 pub struct Physics {
     speed: i32,
@@ -25,7 +25,7 @@ impl Physics {
         self.did_collide = false;
     }
 
-    pub fn run<'a>(&mut self, mut entity_list: Vec<Entity<'a>>) -> Vec<Entity<'a>> {
+    pub fn run<'a>(&mut self, mut entity_list: EntityList<'a>) -> EntityList<'a> {
         // Handle player jump
         let vel_y = entity_list[0].velocity_y + self.gravity;
         entity_list[0].set_velocity_y(vel_y);
