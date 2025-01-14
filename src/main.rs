@@ -1,10 +1,12 @@
 mod animation;
 mod entity;
 mod physics;
+mod spawner;
 
 use animation::{AnimatedTexture, AnimationPlayer};
 use entity::{Entity, EntityList};
 use physics::Physics;
+use spawner::Spawner;
 
 use std::time::Duration;
 
@@ -72,10 +74,11 @@ fn main() -> Result<(), String> {
     let enemy_anim = AnimatedTexture::new(&enemy_texture, Rect::new(0, 0, 64, 64), 10);
 
     let player = Entity::new(player_anim, Rect::new(230, 460, 64, 64));
-    let enemy = Entity::new(enemy_anim, Rect::new(600, 460, 64, 64));
+    let enemy = Entity::new(enemy_anim, Rect::new(1280, 460, 64, 64));
+
+    let mut enemy_spawner = Spawner::new((64 / SPEED) as u32);
 
     entity_list.push(player);
-    entity_list.push(enemy);
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -128,6 +131,10 @@ fn main() -> Result<(), String> {
                 ),
             )?;
         } else {
+            // Spawn enemies
+            if enemy_spawner.should_spawn() {
+                entity_list.push(enemy.clone());
+            }
             // Update
             entity_list = physics.run(entity_list);
 

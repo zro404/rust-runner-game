@@ -63,8 +63,9 @@ impl Physics {
                     entity_list[i] = entity_list.pop().unwrap();
                 } else {
                     entity_list.pop();
+                    c -= 1;
                 }
-                c -= 1;
+                break;
             }
         }
 
