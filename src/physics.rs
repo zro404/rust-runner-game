@@ -52,9 +52,9 @@ impl Physics {
         }
 
         // Destroy if entity leaves viewport
-        let mut c = entity_list.len();
+        let mut _c = entity_list.len();
         for i in 1..entity_list.len() {
-            if c == entity_list.len() - 1 {
+            if _c == entity_list.len() - 1 {
                 break;
             };
             let entity = entity_list.get(i).unwrap();
@@ -63,7 +63,7 @@ impl Physics {
                     entity_list[i] = entity_list.pop().unwrap();
                 } else {
                     entity_list.pop();
-                    c -= 1;
+                    _c -= 1;
                 }
                 break;
             }

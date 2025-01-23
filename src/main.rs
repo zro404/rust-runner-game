@@ -1,9 +1,11 @@
 mod animation;
+mod audio;
 mod entity;
 mod physics;
 mod spawner;
 
 use animation::{AnimatedTexture, AnimationPlayer};
+use audio::AudioManager;
 use entity::{Entity, EntityList};
 use physics::Physics;
 use spawner::Spawner;
@@ -30,6 +32,7 @@ static SPEED: i32 = 7;
 fn main() -> Result<(), String> {
     let ctx = sdl2::init()?;
     let video_subsystem = ctx.video()?;
+    let audio_subsystem = ctx.audio()?;
 
     let _image_context = image::init(InitFlag::PNG | InitFlag::JPG)?;
 
@@ -49,6 +52,8 @@ fn main() -> Result<(), String> {
     let mut entity_list = EntityList::new();
 
     let mut physics = Physics::new(SPEED, GRAVITY);
+
+    let mut audio_manager = AudioManager::new(audio_subsystem);
 
     let animation_player = AnimationPlayer::new();
 
@@ -99,7 +104,8 @@ fn main() -> Result<(), String> {
                             entity_list.pop();
                         }
                     } else if entity_list[0].position.y == 460 {
-                        entity_list[0].set_velocity_y(JUMP_VELOCITY)
+                        entity_list[0].set_velocity_y(JUMP_VELOCITY);
+                        audio_manager.play(10);
                     }
                 }
                 Event::KeyUp {
@@ -117,6 +123,8 @@ fn main() -> Result<(), String> {
         // Render
         canvas.set_draw_color(Color::RGB(100, 100, 100));
         canvas.clear();
+
+        audio_manager.tick();
 
         // Pause on collision
         if physics.get_collision_status() {
