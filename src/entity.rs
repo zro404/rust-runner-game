@@ -4,18 +4,20 @@ use crate::animation::AnimatedTexture;
 
 pub type EntityList<'a> = Vec<Entity<'a>>;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Entity<'a> {
     pub animated_texture: AnimatedTexture<'a>,
     pub position: Rect,
+    pub texture_pos: Rect,
     pub velocity_y: i32,
 }
 
 impl Entity<'_> {
-    pub fn new<'a>(texture: AnimatedTexture<'a>, position: Rect) -> Entity {
+    pub fn new<'a>(texture: AnimatedTexture<'a>, position: Rect, texture_pos: Rect) -> Entity {
         Entity {
             animated_texture: texture,
             position,
+            texture_pos,
             velocity_y: 0,
         }
     }

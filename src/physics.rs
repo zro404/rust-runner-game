@@ -29,12 +29,14 @@ impl Physics {
         // Handle player jump
         let vel_y = entity_list[0].velocity_y + self.gravity;
         entity_list[0].set_velocity_y(vel_y);
-        entity_list[0].position.y = cmp::min(entity_list[0].position.y + vel_y, 460);
+        entity_list[0].position.y = cmp::min(entity_list[0].position.y + vel_y, 480);
+        entity_list[0].texture_pos.y = cmp::min(entity_list[0].texture_pos.y + vel_y, 467);
 
         // Move all entities except Player
         for i in 1..entity_list.len() {
-            let mut e = entity_list[i];
+            let mut e = entity_list[i].clone();
             e.position.x -= self.speed;
+            e.texture_pos.x -= self.speed;
             entity_list[i] = e;
         }
 

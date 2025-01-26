@@ -75,11 +75,21 @@ fn main() -> Result<(), String> {
     let player_texture = texture_creator.load_texture("assets/player.png")?;
     let enemy_texture = texture_creator.load_texture("assets/enemy.png")?;
 
-    let player_anim = AnimatedTexture::new(&player_texture, Rect::new(20, 22, 18, 17), 10);
-    let enemy_anim = AnimatedTexture::new(&enemy_texture, Rect::new(0, 0, 64, 64), 10);
+    let player_anim = AnimatedTexture::new(&player_texture, Rect::new(0, 0, 24, 24), 5, vec![1, 6]);
+    let enemy_anim = AnimatedTexture::new(&enemy_texture, Rect::new(0, 0, 48, 48), 10, vec![8]);
 
-    let player = Entity::new(player_anim, Rect::new(230, 460, 64, 64));
-    let enemy = Entity::new(enemy_anim, Rect::new(1280, 460, 64, 64));
+    let mut player = Entity::new(
+        player_anim,
+        Rect::new(250, 480, 34, 44),
+        Rect::new(230, 467, 64, 64),
+    );
+    player.animated_texture.play(1);
+
+    let enemy = Entity::new(
+        enemy_anim,
+        Rect::new(1310, 485, 50, 40),
+        Rect::new(1280, 455, 100, 100),
+    );
 
     let mut enemy_spawner = Spawner::new((64 / SPEED) as u32);
 
@@ -103,9 +113,10 @@ fn main() -> Result<(), String> {
                         for _ in 1..entity_list.len() {
                             entity_list.pop();
                         }
-                    } else if entity_list[0].position.y == 460 {
+                    } else if entity_list[0].position.y == 480 {
                         entity_list[0].set_velocity_y(JUMP_VELOCITY);
                         audio_manager.play(10);
+                        entity_list[0].animated_texture.play(0);
                     }
                 }
                 Event::KeyUp {
@@ -113,8 +124,9 @@ fn main() -> Result<(), String> {
                     ..
                 } => {
                     if entity_list[0].velocity_y < 0 {
-                        entity_list[0].set_velocity_y(0)
+                        entity_list[0].set_velocity_y(0);
                     }
+                    entity_list[0].animated_texture.play(1);
                 }
                 _ => {}
             }
@@ -152,11 +164,17 @@ fn main() -> Result<(), String> {
             canvas.set_draw_color(Color::RGB(100, 200, 100));
             canvas.fill_rect(Rect::new(0, (W_HEIGHT as i32) - 196, W_WIDTH, 196))?;
 
+            // Draw Colliders
+            // for e in &entity_list {
+            //     canvas.set_draw_color(Color::RGB(0, 200, 200));
+            //     canvas.fill_rect(e.position)?;
+            // }
+
             for e in &entity_list {
                 canvas.copy(
                     e.animated_texture.texture,
                     e.animated_texture.sprite,
-                    e.position,
+                    e.texture_pos,
                 )?;
             }
         }
